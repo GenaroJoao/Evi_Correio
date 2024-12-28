@@ -31,9 +31,9 @@ namespace Evi_Correio
             themeManager.ApplyTheme(this);
 
             // Configura os eventos dos radio buttons
-            rbred.CheckedChanged += RadioButton_CheckedChanged;
-            rbblue.CheckedChanged += RadioButton_CheckedChanged;
-            rbgreen.CheckedChanged += RadioButton_CheckedChanged;
+            rbred.CheckedChanged    += RadioButton_CheckedChanged;
+            rbblue.CheckedChanged   += RadioButton_CheckedChanged;
+            rbgreen.CheckedChanged  += RadioButton_CheckedChanged;
             rborange.CheckedChanged += RadioButton_CheckedChanged;
         }
 

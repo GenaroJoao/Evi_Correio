@@ -13,9 +13,11 @@ namespace Evi_Correio
 {
     public partial class Msg : MaterialForm
     {
+        private readonly CustomThemeManager themeManager = CustomThemeManager.Instance;
         public Msg()
         {
             InitializeComponent();
+            themeManager.ApplyTheme(this);
         }
         public string Mensagem { get; set; }
 

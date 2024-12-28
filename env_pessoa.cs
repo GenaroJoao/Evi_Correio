@@ -20,6 +20,8 @@ namespace Evi_Correio
 {
     public partial class env_pessoa : MaterialForm
     {
+        private readonly CustomThemeManager themeManager = CustomThemeManager.Instance;
+
         public env_pessoa()
         {
             InitializeComponent();
@@ -28,9 +30,7 @@ namespace Evi_Correio
             bcidades.Click += new EventHandler(bcidades_Click);
             this.ShowInTaskbar = false;
 
-            // Configura o MaterialSkinManager para gerenciar o formulário atual
-            var materialSkinManager = MaterialSkinManager.Instance;
-            materialSkinManager.AddFormToManage(this);
+            themeManager.ApplyTheme(this);
 
             // Força o tema inicial para LIGHT
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;

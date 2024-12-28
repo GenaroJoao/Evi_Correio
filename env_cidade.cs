@@ -18,15 +18,15 @@ namespace Evi_Correio
 {
     public partial class env_cidade : MaterialForm
     {
+        private readonly CustomThemeManager themeManager = CustomThemeManager.Instance;
+
         public env_cidade()
         {
             InitializeComponent();
             this.ShowInTaskbar = false;
 
-            // Configura o MaterialSkinManager para gerenciar o formulário atual
-            var materialSkinManager = MaterialSkinManager.Instance;
-            materialSkinManager.AddFormToManage(this);
-            
+            themeManager.ApplyTheme(this);
+
             // Força o tema inicial para LIGHT
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
             materialSkinManager.ColorScheme = new ColorScheme(

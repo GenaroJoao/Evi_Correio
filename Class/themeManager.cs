@@ -15,7 +15,12 @@ namespace Evi_Correio
         private ThemeColor _currentTheme = ThemeColor.Blue;
         private readonly List<MaterialForm> _managedForms = new List<MaterialForm>();
 
-        // Enumeração para as cores disponíveis
+        // Cores padrão
+        private readonly Color DarkBackground = Color.FromArgb(45, 45, 45);
+        private readonly Color LightBackground = Color.FromArgb(240, 240, 240);
+        private readonly Color DarkSurface = Color.FromArgb(50, 50, 50);
+        private readonly Color LightSurface = Color.White;
+
         public enum ThemeColor
         {
             Red,
@@ -148,7 +153,7 @@ namespace Evi_Correio
         }
 
         public void ApplyTheme(MaterialForm form)
-        {
+        { 
             try
             {
                 if (form == null || form.IsDisposed) return;
@@ -222,23 +227,34 @@ namespace Evi_Correio
                 }
 
                 // Atualiza controles Windows Forms padrão
-                if (control is Label label && !(control is MaterialLabel))
+                switch (control)
                 {
-                    label.ForeColor = _isDarkTheme ? Color.White : Color.Black;
-                    label.BackColor = Color.Transparent;
-                }
-                else if (control is TextBox textBox)
-                {
-                    textBox.ForeColor = _isDarkTheme ? Color.White : Color.Black;
-                    textBox.BackColor = _isDarkTheme ? Color.FromArgb(50, 50, 50) : Color.White;
-                }
-                else if (control is DataGridView grid)
-                {
-                    UpdateDataGridViewColors(grid);
-                }
-                else if (control is GroupBox groupBox)
-                {
-                    UpdateGroupBoxColors(groupBox);
+                    case Label label when !(control is MaterialLabel):
+                        label.ForeColor = _isDarkTheme ? Color.White : Color.Black;
+                        label.BackColor = Color.Transparent;
+                        break;
+
+                    case TextBox textBox:
+                        textBox.ForeColor = _isDarkTheme ? Color.White : Color.Black;
+                        textBox.BackColor = _isDarkTheme ? DarkSurface : LightSurface;
+                        break;
+
+                    case Panel panel:
+                        UpdatePanelColors(panel);
+                        break;
+
+                    case DataGridView grid:
+                        UpdateDataGridViewColors(grid);
+                        break;
+
+                    case GroupBox groupBox:
+                        UpdateGroupBoxColors(groupBox);
+                        break;
+
+                    case Button button when !(button is MaterialButton):
+                        button.BackColor = _isDarkTheme ? DarkSurface : LightSurface;
+                        button.ForeColor = _isDarkTheme ? Color.White : Color.Black;
+                        break;
                 }
 
                 // Atualiza recursivamente todos os controles filhos
@@ -253,6 +269,31 @@ namespace Evi_Correio
             }
         }
 
+        private void UpdatePanelColors(Panel panel)
+        {
+            // Verifica se é um painel que deve permanecer escuro
+            bool isAlwaysDark = panel.Name.ToLower().Contains("dark") ||
+                               panel.Name.ToLower().Contains("escuro");
+
+            if (isAlwaysDark)
+            {
+                panel.BackColor = DarkBackground;
+                panel.ForeColor = Color.White;
+            }
+            else
+            {
+                panel.BackColor = _isDarkTheme ? DarkBackground : LightBackground;
+                panel.ForeColor = _isDarkTheme ? Color.White : Color.Black;
+            }
+
+            // Atualiza a borda se existir
+            if (panel.BorderStyle == BorderStyle.FixedSingle ||
+                panel.BorderStyle == BorderStyle.Fixed3D)
+            {
+                panel.BorderStyle = BorderStyle.FixedSingle;
+            }
+        }
+
         private void UpdateDataGridViewColors(DataGridView grid)
         {
             if (grid == null) return;
@@ -261,25 +302,23 @@ namespace Evi_Correio
             var colorScheme = materialSkinManager.ColorScheme;
 
             grid.EnableHeadersVisualStyles = false;
-            grid.BackgroundColor = _isDarkTheme ?
-                Color.FromArgb(50, 50, 50) :
-                Color.FromArgb(240, 240, 240);
+            grid.BackgroundColor = _isDarkTheme ? DarkBackground : LightBackground;
+            grid.GridColor = _isDarkTheme ? Color.FromArgb(70, 70, 70) : Color.FromArgb(200, 200, 200);
 
+            // Estilo do cabeçalho
             grid.ColumnHeadersDefaultCellStyle.BackColor = colorScheme.PrimaryColor;
-            grid.ColumnHeadersDefaultCellStyle.ForeColor = _isDarkTheme ?
-                Color.White :
-                Color.Black;
+            grid.ColumnHeadersDefaultCellStyle.ForeColor = _isDarkTheme ? Color.White : Color.Black;
+            grid.ColumnHeadersDefaultCellStyle.SelectionBackColor = colorScheme.DarkPrimaryColor;
+            grid.ColumnHeadersDefaultCellStyle.SelectionForeColor = _isDarkTheme ? Color.White : Color.Black;
 
-            grid.DefaultCellStyle.BackColor = _isDarkTheme ?
-                Color.FromArgb(60, 60, 60) :
-                Color.White;
-            grid.DefaultCellStyle.ForeColor = _isDarkTheme ?
-                Color.White :
-                Color.Black;
+            // Estilo das células
+            grid.DefaultCellStyle.BackColor = _isDarkTheme ? DarkSurface : LightSurface;
+            grid.DefaultCellStyle.ForeColor = _isDarkTheme ? Color.White : Color.Black;
+            grid.DefaultCellStyle.SelectionBackColor = colorScheme.AccentColor;
+            grid.DefaultCellStyle.SelectionForeColor = _isDarkTheme ? Color.White : Color.Black;
 
-            grid.GridColor = _isDarkTheme ?
-                Color.FromArgb(70, 70, 70) :
-                Color.FromArgb(200, 200, 200);
+            // Atualiza as barras de rolagem
+            grid.EnableHeadersVisualStyles = false;
 
             grid.Refresh();
         }
@@ -289,20 +328,14 @@ namespace Evi_Correio
             if (groupBox == null) return;
 
             groupBox.ForeColor = _isDarkTheme ? Color.White : Color.Black;
-            groupBox.BackColor = _isDarkTheme ?
-                Color.FromArgb(50, 50, 50) :
-                Color.FromArgb(240, 240, 240);
+            groupBox.BackColor = _isDarkTheme ? DarkBackground : LightBackground;
 
             foreach (Control control in groupBox.Controls)
             {
                 if (!(control is MaterialButton))
                 {
-                    control.BackColor = _isDarkTheme ?
-                        Color.FromArgb(50, 50, 50) :
-                        Color.FromArgb(240, 240, 240);
-                    control.ForeColor = _isDarkTheme ?
-                        Color.White :
-                        Color.Black;
+                    control.BackColor = _isDarkTheme ? DarkSurface : LightSurface;
+                    control.ForeColor = _isDarkTheme ? Color.White : Color.Black;
                 }
             }
 
