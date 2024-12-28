@@ -26,13 +26,7 @@ namespace Evi_Correio
             this.ShowInTaskbar = false;
 
             themeManager.ApplyTheme(this);
-
-            // Força o tema inicial para LIGHT
-            materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            materialSkinManager.ColorScheme = new ColorScheme(
-                Primary.BlueGrey800, Primary.BlueGrey900,
-                Primary.BlueGrey500, Accent.LightBlue200,
-                TextShade.WHITE);
+                
         }
         DataTable cidades = new DataTable();
 

@@ -32,12 +32,6 @@ namespace Evi_Correio
 
             themeManager.ApplyTheme(this);
 
-            // Força o tema inicial para LIGHT
-            materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            materialSkinManager.ColorScheme = new ColorScheme(
-                Primary.BlueGrey800, Primary.BlueGrey900,
-                Primary.BlueGrey500, Accent.LightBlue200,
-                TextShade.WHITE);
         }
         DataTable pessoa = new DataTable();
 
